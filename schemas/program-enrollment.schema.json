@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://choice-gap.local/schemas/program-enrollment.schema.json",
+  "title": "ProgramEnrollment",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "programId", "participantId", "status", "createdAt"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "programId": { "type": "string", "minLength": 1 },
+    "participantId": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["invited", "active", "left", "ended"] },
+    "joinedAt": { "type": ["string", "null"], "format": "date-time" },
+    "leftAt": { "type": ["string", "null"], "format": "date-time" },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}
+

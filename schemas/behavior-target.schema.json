@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://choice-gap.local/schemas/behavior-target.schema.json",
+  "title": "BehaviorTarget",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "personalSpaceId", "type", "desiredChange", "status", "createdAt"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "personalSpaceId": { "type": "string", "minLength": 1 },
+    "type": { "const": "youtube" },
+    "desiredChange": {
+      "enum": ["unintentional_open", "long_session", "high_frequency", "general_control", "other"]
+    },
+    "status": { "enum": ["active", "paused", "archived"] },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}
+

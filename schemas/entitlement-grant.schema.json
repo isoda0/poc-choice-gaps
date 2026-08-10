@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://choice-gap.local/schemas/entitlement-grant.schema.json",
+  "title": "EntitlementGrant",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "beneficiaryPersonId",
+    "planId",
+    "sourceType",
+    "sourceId",
+    "validFrom",
+    "status",
+    "createdAt"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "beneficiaryPersonId": { "type": "string", "minLength": 1 },
+    "planId": { "type": "string", "minLength": 1 },
+    "sourceType": {
+      "enum": ["individual_subscription", "sponsored_program", "trial", "promotion"]
+    },
+    "sourceId": { "type": "string", "minLength": 1 },
+    "validFrom": { "type": "string", "format": "date-time" },
+    "validUntil": { "type": ["string", "null"], "format": "date-time" },
+    "status": { "enum": ["active", "scheduled", "expired", "revoked"] },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}
+

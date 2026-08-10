@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://choice-gap.local/schemas/aggregate-metric-snapshot.schema.json",
+  "title": "AggregateMetricSnapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "programId",
+    "metricDefinitionId",
+    "metricVersion",
+    "periodStart",
+    "periodEnd",
+    "participantCount",
+    "reportingPolicyVersion",
+    "privacyStatus",
+    "generatedAt"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "programId": { "type": "string", "minLength": 1 },
+    "metricDefinitionId": { "type": "string", "minLength": 1 },
+    "metricVersion": { "type": "integer", "minimum": 1 },
+    "periodStart": { "type": "string", "format": "date-time" },
+    "periodEnd": { "type": "string", "format": "date-time" },
+    "cohortKey": { "type": ["string", "null"], "maxLength": 100 },
+    "value": { "type": ["number", "null"] },
+    "unit": { "type": ["string", "null"], "maxLength": 40 },
+    "participantCount": { "type": "integer", "minimum": 0 },
+    "reportingPolicyVersion": { "type": "integer", "minimum": 1 },
+    "privacyStatus": {
+      "enum": ["publishable", "suppressed_small_cohort", "suppressed_policy"]
+    },
+    "generatedAt": { "type": "string", "format": "date-time" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "privacyStatus": { "const": "publishable" } } },
+      "then": { "required": ["value", "unit"] }
+    },
+    {
+      "if": {
+        "properties": {
+          "privacyStatus": { "enum": ["suppressed_small_cohort", "suppressed_policy"] }
+        }
+      },
+      "then": {
+        "properties": {
+          "value": { "type": "null" },
+          "unit": { "type": ["string", "null"] }
+        }
+      }
+    }
+  ]
+}
+

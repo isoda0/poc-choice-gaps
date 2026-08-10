@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://choice-gap.local/schemas/personal-space.schema.json",
+  "title": "PersonalSpace",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "ownerPersonId", "status", "createdAt"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "ownerPersonId": { "type": "string", "minLength": 1 },
+    "status": {
+      "enum": ["active", "export_pending", "deletion_pending", "deleted"]
+    },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}
+

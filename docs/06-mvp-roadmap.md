@@ -14,6 +14,9 @@ Observation → Small Intervention → Behavior → Feedback → Adaptation
 
 - Xcodeプロジェクトと基本モジュール構成
 - Domain型とRepository Protocol
+- Person / PersonalSpaceによる個人データscope
+- 独立したValueTarget型
+- EntitlementResolving interface（当面はローカルFree Grant）
 - `schemas/` とSwift型の対応表
 - インメモリRepository
 - 日時を注入できるClock
@@ -21,6 +24,7 @@ Observation → Small Intervention → Behavior → Feedback → Adaptation
 ### 完了条件
 
 - Domain層がSwiftUI、永続化、外部AI SDKへ依存しない。
+- Personal entityがorganizationIdや課金状態へ依存しない。
 - サンプルプロフィールを読み、Day 1介入を返す単体テストが通る。
 
 ## Phase 1: Static Vertical Slice
@@ -154,4 +158,3 @@ Observation → Small Intervention → Behavior → Feedback → Adaptation
 3. 匿名イベントをどこまで端末外へ送るか。
 4. 通知なしでも最初のテストを成立させるか。
 5. 正式名称決定前のBundle ID。
-

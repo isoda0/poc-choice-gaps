@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://choice-gap.local/schemas/consent-record.schema.json",
+  "title": "ConsentRecord",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "personId",
+    "purpose",
+    "policyVersion",
+    "status",
+    "recordedAt",
+    "effectiveAt"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "personId": { "type": "string", "minLength": 1 },
+    "purpose": {
+      "enum": ["core_service", "product_analytics", "sponsor_aggregate_reporting", "ai_personalization"]
+    },
+    "policyVersion": { "type": "integer", "minimum": 1 },
+    "status": { "enum": ["granted", "withdrawn"] },
+    "recordedAt": { "type": "string", "format": "date-time" },
+    "effectiveAt": { "type": "string", "format": "date-time" }
+  }
+}
+

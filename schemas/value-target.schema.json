@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://choice-gap.local/schemas/value-target.schema.json",
+  "title": "ValueTarget",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "personalSpaceId", "category", "status", "createdAt", "updatedAt"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "personalSpaceId": { "type": "string", "minLength": 1 },
+    "category": {
+      "enum": [
+        "technical_learning",
+        "certification",
+        "reading",
+        "exercise",
+        "sleep",
+        "rest",
+        "family",
+        "hobby",
+        "creative_work",
+        "other"
+      ]
+    },
+    "description": { "type": ["string", "null"], "maxLength": 200 },
+    "status": { "enum": ["active", "achieved", "paused", "archived"] },
+    "priority": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "updatedAt": { "type": "string", "format": "date-time" }
+  }
+}
+

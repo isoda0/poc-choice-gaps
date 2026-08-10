@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://choice-gap.local/schemas/recovered-time-estimate.schema.json",
+  "title": "RecoveredTimeEstimate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "personalSpaceId",
+    "periodStart",
+    "periodEnd",
+    "estimatedMinutes",
+    "confidence",
+    "method",
+    "methodVersion",
+    "inputCoverage",
+    "createdAt"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "personalSpaceId": { "type": "string", "minLength": 1 },
+    "periodStart": { "type": "string", "format": "date-time" },
+    "periodEnd": { "type": "string", "format": "date-time" },
+    "estimatedMinutes": { "type": "integer", "minimum": 0 },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "method": { "enum": ["self_report", "baseline_delta", "hybrid"] },
+    "methodVersion": { "type": "integer", "minimum": 1 },
+    "inputCoverage": { "type": "number", "minimum": 0, "maximum": 1 },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}
+

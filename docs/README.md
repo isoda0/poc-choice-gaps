@@ -12,6 +12,7 @@
 | [06-mvp-roadmap.md](06-mvp-roadmap.md) | 実装フェーズ、順序、完了条件 |
 | [07-safety-and-scope.md](07-safety-and-scope.md) | 対象外、安全ゲート、表現上の境界 |
 | [08-metrics-and-validation.md](08-metrics-and-validation.md) | MVP指標、イベント、検証方法 |
+| [09-b2b2c-domain-boundaries.md](09-b2b2c-domain-boundaries.md) | B2B2C、テナンシー、利用権、個人データ境界 |
 
 ## 出典と扱い
 
@@ -23,4 +24,3 @@
 - 「決定済み」「仮説」「未決定」を混同しない。
 - UXコピーと内部ドメイン用語を分離する。
 - 医療・安全に関わる対象範囲は、実装都合だけで拡張しない。
-
