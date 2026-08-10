@@ -1,0 +1,27 @@
+# Xcode
+DerivedData/
+*.xcuserstate
+xcuserdata/
+*.xccheckout
+*.xcscmblueprint
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+Secrets.xcconfig
+
+# macOS / editors
+.DS_Store
+.idea/
+.vscode/
+
+# Temporary files
+tmp/
+*.log
+

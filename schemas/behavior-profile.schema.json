@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://choice-gap.local/schemas/behavior-profile.schema.json",
+  "title": "BehaviorProfile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "behaviorTargetId",
+    "targetType",
+    "desiredChange",
+    "problemPattern",
+    "triggers",
+    "motivation",
+    "interactionPreference",
+    "safetyLevel",
+    "updatedAt"
+  ],
+  "properties": {
+    "behaviorTargetId": { "type": "string", "minLength": 1 },
+    "targetType": { "const": "youtube" },
+    "desiredChange": {
+      "enum": ["unintentional_open", "long_session", "high_frequency", "general_control", "other"]
+    },
+    "problemPattern": {
+      "enum": ["automatic_open", "urge_control", "stopping_control", "lack_alternative", "unknown"]
+    },
+    "triggers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": ["after_work", "boredom", "fatigue", "stress", "before_sleep", "no_pattern", "other"]
+      }
+    },
+    "motivation": { "enum": ["high", "medium", "unknown"] },
+    "interactionPreference": { "enum": ["low", "medium", "high"] },
+    "safetyLevel": { "enum": ["normal", "unsupported_target", "needs_support"] },
+    "updatedAt": { "type": "string", "format": "date-time" }
+  }
+}
+

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://choice-gap.local/schemas/intervention-template.schema.json",
+  "title": "InterventionTemplate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "version",
+    "name",
+    "family",
+    "targetMechanism",
+    "applicableTargets",
+    "interactionCost",
+    "difficulty",
+    "instructionTemplate",
+    "outcomeDefinition",
+    "evidenceStatus",
+    "active"
+  ],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "version": { "type": "integer", "minimum": 1 },
+    "name": { "type": "string", "minLength": 1 },
+    "family": {
+      "enum": ["awareness", "pause", "stop_rule", "alternative", "if_then", "reflection", "environment"]
+    },
+    "targetMechanism": {
+      "enum": ["awareness", "urge_control", "stopping_control", "alternative_available", "trigger_awareness"]
+    },
+    "applicableTargets": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "const": "youtube" }
+    },
+    "interactionCost": { "enum": ["low", "medium", "high"] },
+    "difficulty": { "type": "integer", "minimum": 1, "maximum": 5 },
+    "preconditions": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "safetyConstraints": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "instructionTemplate": { "type": "string", "minLength": 1 },
+    "outcomeDefinition": { "type": "string", "minLength": 1 },
+    "evidenceStatus": { "enum": ["conversation_hypothesis", "review_pending", "reviewed"] },
+    "active": { "type": "boolean" }
+  }
+}
+

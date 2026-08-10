@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://choice-gap.local/schemas/quest-result.schema.json",
+  "title": "QuestResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "questId",
+    "completion",
+    "interventionPerformed",
+    "behaviorPerformed",
+    "intentional",
+    "createdAt"
+  ],
+  "properties": {
+    "questId": { "type": "string", "minLength": 1 },
+    "completion": { "enum": ["success", "partial", "failed"] },
+    "interventionPerformed": { "type": "boolean" },
+    "behaviorPerformed": { "enum": [true, false, "unknown"] },
+    "intentional": { "enum": [true, false, "unknown"] },
+    "failureReason": {
+      "enum": ["forgot", "too_burdensome", "strong_urge", "automatic_open", "continued_browsing", "other", null]
+    },
+    "declaredIntention": { "type": ["string", "null"], "maxLength": 200 },
+    "helpfulness": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 },
+    "burden": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 },
+    "createdAt": { "type": "string", "format": "date-time" }
+  }
+}
+
