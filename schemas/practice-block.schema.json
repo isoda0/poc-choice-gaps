@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://choice-gap.local/schemas/practice-block.schema.json",
+  "title": "PracticeBlock",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "personalSpaceId",
+    "behaviorTargetId",
+    "interventionTemplateId",
+    "templateVersion",
+    "status",
+    "minimumPracticeCount",
+    "validPracticeCount",
+    "selectionReason",
+    "startedAt"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "personalSpaceId": { "type": "string", "minLength": 1 },
+    "behaviorTargetId": { "type": "string", "minLength": 1 },
+    "interventionTemplateId": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "templateVersion": { "type": "integer", "minimum": 1 },
+    "status": { "enum": ["assigned", "active", "review_ready", "completed", "paused", "abandoned"] },
+    "minimumPracticeCount": { "type": "integer", "minimum": 1 },
+    "validPracticeCount": { "type": "integer", "minimum": 0 },
+    "selectionReason": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "startedAt": { "type": "string", "format": "date-time" },
+    "reviewedAt": { "type": ["string", "null"], "format": "date-time" },
+    "completedAt": { "type": ["string", "null"], "format": "date-time" }
+  }
+}

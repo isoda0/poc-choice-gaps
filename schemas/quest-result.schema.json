@@ -6,25 +6,57 @@
   "additionalProperties": false,
   "required": [
     "questId",
-    "completion",
+    "practiceBlockId",
+    "practiceOutcome",
     "interventionPerformed",
     "behaviorPerformed",
     "intentional",
+    "awarenessTiming",
     "createdAt"
   ],
   "properties": {
     "questId": { "type": "string", "minLength": 1 },
-    "completion": { "enum": ["success", "partial", "failed"] },
+    "practiceBlockId": { "type": "string", "minLength": 1 },
+    "practiceOutcome": {
+      "enum": ["practiced", "remembered_afterward", "not_remembered", "no_opportunity"]
+    },
     "interventionPerformed": { "type": "boolean" },
     "behaviorPerformed": { "enum": [true, false, "unknown"] },
     "intentional": { "enum": [true, false, "unknown"] },
-    "failureReason": {
-      "enum": ["forgot", "too_burdensome", "strong_urge", "automatic_open", "continued_browsing", "other", null]
+    "awarenessTiming": {
+      "enum": [
+        "trigger_before_action",
+        "before_opening",
+        "while_opening",
+        "after_opening",
+        "during_viewing",
+        "after_viewing",
+        "not_noticed",
+        "unknown",
+        "no_opportunity"
+      ]
+    },
+    "observedTrigger": {
+      "enum": ["after_work", "boredom", "fatigue", "stress", "before_sleep", "no_pattern", "other", null]
+    },
+    "barrier": {
+      "enum": ["forgot", "too_burdensome", "strong_urge", "automatic_action", "continued_browsing", "could_not_recall", "other", null]
     },
     "declaredIntention": { "type": ["string", "null"], "maxLength": 200 },
     "helpfulness": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 },
     "burden": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 },
+    "occurredAt": { "type": ["string", "null"], "format": "date-time" },
     "createdAt": { "type": "string", "format": "date-time" }
-  }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "practiceOutcome": { "const": "no_opportunity" } } },
+      "then": {
+        "properties": {
+          "awarenessTiming": { "const": "no_opportunity" },
+          "interventionPerformed": { "const": false }
+        }
+      }
+    }
+  ]
 }
-

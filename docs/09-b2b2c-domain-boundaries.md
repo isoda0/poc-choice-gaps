@@ -32,7 +32,7 @@ Choice Gap ── 閾値を満たす集計のみ ─→ スポンサー
 | --- | --- | --- |
 | Personal Sensitive | BehaviorTarget、Trigger、State、QuestResult、ValueTarget、自由入力 | 本人、必要最小限のサービス処理 |
 | Sponsor Operational | 招待、席割当、参加状態、契約期間 | 認可されたスポンサー管理者 |
-| Aggregate Reporting | 閾値を満たした継続率、Quest実施率、任意自己評価 | スポンサー管理者 |
+| Aggregate Reporting | 閾値を満たした継続率、Reflection参加率、任意自己評価 | スポンサー管理者 |
 | Commercial | 契約、請求、Plan、SeatPool | Billing担当者 |
 | Security / Audit | 同意、アクセス判断、管理操作 | 限定された運用・監査担当 |
 
@@ -51,7 +51,7 @@ Personal SensitiveとSponsor Operationalを同じ管理画面用Query Modelに�
 
 - 個人のYouTube/SNS利用状況を見る。
 - 個人のBehaviorTarget、ValueTarget、Triggerを知る。
-- 個人のQuest内容、成功率、自由入力を見る。
+- 個人のQuest内容、Practice Outcome、Awareness Timing、自由入力を見る。
 - 個人へ学習や業務上のValueTargetを設定する。
 - 個人の推薦アルゴリズムを上書きする。
 - 人事評価、学業評価、懲戒のための個人スコアを取得する。
@@ -152,4 +152,3 @@ Sponsor Reporting: 集計されたProgram利用状況
 - cohortが小さい場合に値を返していないか。
 - Program終了でPersonalSpaceを消していないか。
 - LLMへスポンサー名・所属・個人行動を不必要に同時送信していないか。
-

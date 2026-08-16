@@ -5,18 +5,19 @@
 | 文書 | 用途 |
 | --- | --- |
 | [01-product-concept.md](01-product-concept.md) | プロダクトの目的、対象、原則、用語 |
-| [02-ux-and-onboarding.md](02-ux-and-onboarding.md) | 初回ヒアリング、入力方法、質問予算、結果入力 |
+| [02-ux-and-onboarding.md](02-ux-and-onboarding.md) | 初回ヒアリング、Practice Block、定時Reflection |
 | [03-domain-model.md](03-domain-model.md) | Entity、値、状態遷移、不変条件 |
-| [04-intervention-engine.md](04-intervention-engine.md) | 介入カタログ、推薦、LLM境界 |
-| [05-mvp-vertical-slice.md](05-mvp-vertical-slice.md) | Day 1からDay 2までの完成条件 |
+| [04-intervention-engine.md](04-intervention-engine.md) | カリキュラム、反復、進行ルール、LLM境界 |
+| [05-mvp-vertical-slice.md](05-mvp-vertical-slice.md) | Day 1、定時Reflection、Block Reviewの完成条件 |
 | [06-mvp-roadmap.md](06-mvp-roadmap.md) | 実装フェーズ、順序、完了条件 |
 | [07-safety-and-scope.md](07-safety-and-scope.md) | 対象外、安全ゲート、表現上の境界 |
 | [08-metrics-and-validation.md](08-metrics-and-validation.md) | MVP指標、イベント、検証方法 |
 | [09-b2b2c-domain-boundaries.md](09-b2b2c-domain-boundaries.md) | B2B2C、テナンシー、利用権、個人データ境界 |
+| [10-behavior-change-program-design.md](10-behavior-change-program-design.md) | 心理学的構造、一次資料、製品への翻訳境界 |
 
 ## 出典と扱い
 
-初期内容は、ChatGPT会話「依存症改善アプリ構想」（conversation ID: `6a799d59-5280-83ee-8577-ccfde6e21cf6`）で合意された構想を編集・統合したものです。会話中に言及された研究やガイドラインの引用は、このリポジトリでは検証済み参考文献として扱いません。研究・医療に関する主張は、製品化前に一次情報を確認し、必要に応じて専門家レビューを受けます。
+初期内容は、ChatGPT会話「依存症改善アプリ構想」（conversation ID: `6a799d59-5280-83ee-8577-ccfde6e21cf6`）で合意された構想を編集・統合したものです。2026-08-15に追加確認した一次資料・公的ガイドラインは [10-behavior-change-program-design.md](10-behavior-change-program-design.md) に限定して記録します。参照済みであることと、Choice Gapへの有効性や専門家レビュー済みであることは分けて扱います。
 
 ## 更新ルール
 

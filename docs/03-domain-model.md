@@ -1,4 +1,4 @@
-# ドメインモデル v0.2 — B2C / B2B2C対応
+# ドメインモデル v0.3 — B2C / B2B2C対応
 
 ## 1. 設計目標
 
@@ -14,7 +14,7 @@ MVPは個人向けYouTube習慣改善から始めますが、将来は企業・�
 
 最重要ルールは次です。
 
-> `BehaviorTarget`、`BehaviorState`、`Quest`、`QuestResult`、`ValueTarget` に `organizationId` を持たせない。
+> `BehaviorTarget`、`BehaviorState`、`PracticeBlock`、`Quest`、`QuestResult`、`ValueTarget` に `organizationId` を持たせない。
 
 企業が料金を払っても、個人の行動データの所有・管理主体が企業へ移るわけではありません。
 
@@ -24,7 +24,8 @@ MVPは個人向けYouTube習慣改善から始めますが、将来は企業・�
 ┌────────────────────────────────────────────┐
 │ Personal Behavior Change                   │
 │ PersonalSpace, BehaviorTarget, ValueTarget │
-│ BehaviorState, Quest, QuestResult          │
+│ BehaviorState, PracticeBlock               │
+│ Quest, QuestResult                         │
 └────────────────────────────────────────────┘
                  ▲ entitlement only
                  │
@@ -61,8 +62,9 @@ Person
      ├─ BehaviorTarget *
      │   ├─ BehaviorProfile
      │   ├─ BehaviorState
-     │   └─ Quest *
-     │       └─ QuestResult ?
+     │   └─ PracticeBlock *
+     │       └─ Quest *
+     │           └─ QuestResult ?
      ├─ ValueTarget *
      │   └─ ValueActivity *
      └─ RecoveredTimeEstimate *
@@ -79,7 +81,8 @@ EntitlementGrant
  └─ source: IndividualSubscription | SponsoredProgram
 
 InterventionTemplate
- └─ Quest *
+ └─ PracticeBlock *
+     └─ Quest *
 ```
 
 ## 4. Personal Behavior Change Context
@@ -166,7 +169,7 @@ ValueTargetはBehaviorProfileへ埋め込みません。BehaviorTargetとValueTa
 
 ### BehaviorState
 
-観察や結果から推定する変化する状態です。各値を `value` と `confidence` に分けます。
+複数回の観察から推定する変化する状態です。各値を `value` と `confidence` に分けます。
 
 ```text
 behaviorTargetId
@@ -182,6 +185,7 @@ estimatorVersion
 ```
 
 値の範囲は `0.0...1.0`。confidenceが低いことと、状態値が低いことは別です。
+1件のReflectionから値を大きく変更せず、主に観察数とconfidenceを更新します。
 
 ```json
 {
@@ -194,6 +198,24 @@ estimatorVersion
   "receptivity": { "value": 0.70, "confidence": 0.30 }
 }
 ```
+
+### AwarenessTiming
+
+特定の利用場面で、本人がどの時点で自動的な行動に気づいたかを表す順序付きの観察値です。固定的な能力値ではありません。
+
+```text
+not_noticed
+after_viewing
+during_viewing
+after_opening
+while_opening
+before_opening
+trigger_before_action
+unknown
+no_opportunity
+```
+
+`unknown` は回想できない場合、`no_opportunity` は対象場面がなかった場合です。この2つはAwarenessの高低や進歩へ換算しません。
 
 ### InterventionTemplate
 
@@ -212,13 +234,15 @@ preconditions[]
 safetyConstraints[]
 instructionTemplate
 outcomeDefinition
+minimumPracticeCount
+progressionCriteria[]
 evidenceStatus
 active
 ```
 
-### Quest
+### PracticeBlock
 
-特定のBehaviorTargetへ割り当てた介入のスナップショットです。
+同じスキルを複数回練習する単位です。毎日の目新しさではなく、反復とBlock Reviewを管理します。
 
 ```text
 id
@@ -226,6 +250,38 @@ personalSpaceId
 behaviorTargetId
 interventionTemplateId
 templateVersion
+status: assigned | active | review_ready | completed | paused | abandoned
+minimumPracticeCount
+validPracticeCount
+selectionReason
+startedAt
+reviewedAt?
+completedAt?
+```
+
+状態遷移:
+
+```text
+assigned → active → review_ready → completed
+              │          └────────→ active（本人が継続を選択）
+              ├─ paused
+              └─ abandoned
+```
+
+`validPracticeCount` は `practiced` と `remembered_afterward` だけを数えます。`not_remembered` と `no_opportunity` は除外します。Blockを自動完了させず、Reviewで本人に継続または次の練習を選べるようにします。
+
+### Quest
+
+Practice Blockから特定の日へ割り当てた練習のスナップショットです。同じInterventionTemplateから複数日のQuestを作れます。
+
+```text
+id
+personalSpaceId
+behaviorTargetId
+practiceBlockId
+interventionTemplateId
+templateVersion
+practiceDay
 relatedValueTargetId?
 title
 instruction
@@ -233,7 +289,8 @@ reason
 status
 assignedAt
 acceptedAt?
-startedAt?
+reflectionDueAt?
+reflectedAt?
 ```
 
 `relatedValueTargetId` は、本人の価値目標とQuestを結びつける場合だけ設定します。スポンサーのProgramを推薦理由として直接埋め込みません。
@@ -241,28 +298,32 @@ startedAt?
 Questの状態遷移:
 
 ```text
-assigned → accepted → started → completed
-                              ├─ success
-                              ├─ partial
-                              └─ failed
+assigned → accepted → waiting_for_reflection → reflected
+                       └──────────────────────→ expired
 ```
 
 ### QuestResult
 
-介入実行と対象行動の結果を分けます。
+毎日の定時Reflectionで得た自己申告です。練習の想起、スキル実行、気づいた位置、対象行動の結果を分けます。
 
 ```text
 questId
-completion: success | partial | failed
+practiceBlockId
+practiceOutcome:
+  practiced | remembered_afterward | not_remembered | no_opportunity
 interventionPerformed: boolean
 behaviorPerformed: boolean | unknown
 intentional: boolean | unknown
-failureReason?
+awarenessTiming: AwarenessTiming
+observedTrigger?
+barrier?
 declaredIntention?
 helpfulness?
 burden?
 createdAt
 ```
+
+`practiceOutcome` は人の成功・失敗を評価する値ではありません。`behaviorPerformed == true` でも、気づきや介入を実行できていれば練習結果として記録します。
 
 ### RecoveredTimeEstimate
 
@@ -301,21 +362,26 @@ createdAt
 
 ### State Update例
 
-Day 1で目的は決められたが、別の動画へ移り続けた場合:
+同じAwareness Blockで3回の有効な観察が得られた場合:
 
 ```text
 観察:
-  Awareness介入は実行できた
-  stopping controlの課題が示唆された
+  during_viewing
+  after_opening
+  while_opening
+  共通トリガー: fatigue
 
 更新:
-  awareness.value ↑
+  awareness.value: 小さく上げる
   awareness.confidence ↑
-  stoppingControl.value ↓
-  stoppingControl.confidence ↑
+  automaticity.confidence ↑
+  trigger observationを追加
+
+次候補:
+  pause_one_breath
 ```
 
-MVPでは複雑なベイズ更新を行わず、明示的なルールとテスト可能な差分で更新します。
+1日の結果だけでは主要なBehaviorStateやPractice Blockを切り替えません。MVPでは複雑なベイズ更新を行わず、明示的なルールとテスト可能な差分で更新します。
 
 ## 5. Sponsorship & Entitlements Context
 
@@ -499,7 +565,7 @@ generatedAt
 スポンサーへ提供しないもの:
 
 - 個人別のBehaviorTarget、利用時間、Trigger、ValueTarget
-- 個人別のQuest、成功率、自由入力、深夜利用
+- 個人別のQuest、Practice Outcome、Awareness Timing、自由入力、深夜利用
 - 個人が特定できる小さなcohortや属性の組み合わせ
 - 人事評価、学業評価、懲戒へ使える個人スコア
 
@@ -536,13 +602,15 @@ SeatPool
 3. スポンサー関係の終了はEntitlementを変えるが、PersonalSpaceを削除しない。
 4. ValueTargetは本人だけが作成・変更・閲覧範囲決定できる。
 5. RecoveredTimeはmethod、version、confidenceを伴う推定値として保存する。
-6. Questの介入成功と対象行動の結果を分離する。
+6. Questの練習結果、Awareness Timing、対象行動の結果を分離する。
 7. Entitlementは複数Grantから計算し、Personへ `isPremium` を保存しない。
 8. 個人データをスポンサー集計へ使うには、目的別の有効なConsentが必要。
 9. 集計はReportingPolicyの最小cohort数を下回る場合に抑止する。
 10. Sponsor向けProjectionにpersonId、enrollmentId、自由入力を含めない。
 11. Programが本人のBehaviorTarget、ValueTarget、Questを強制・上書きしない。
-12. QuestとInterventionTemplateはversionを固定し、推薦を再現可能にする。
+12. PracticeBlock、Quest、InterventionTemplateはversionを固定し、推薦と進行判断を再現可能にする。
+13. 1日の結果だけでPracticeBlockのスキルを自動変更しない。
+14. `not_remembered` と `no_opportunity` を有効練習回数へ算入せず、`no_opportunity` をAwarenessの高低へ換算しない。
 
 ## 10. 状態遷移
 
@@ -565,12 +633,15 @@ scheduled → active → expired
 ```text
 newUser
   → onboarding
-  → activeExperiment
-  → waitingForResult
-  → resultRecorded
-  → stateUpdated
-  → nextQuestReady
-  → activeExperiment
+  → practiceBlockAssigned
+  → dailyQuestActive
+  → waitingForScheduledReflection
+  → reflectionRecorded
+  → practiceBlockUpdated
+      ├─ nextDailyQuestReady → dailyQuestActive
+      └─ blockReviewReady
+           ├─ continueSameBlock → dailyQuestActive
+           └─ nextBlockReady → practiceBlockAssigned
 ```
 
 ProgramEnrollmentの状態とPersonal Journeyは独立です。
@@ -598,12 +669,15 @@ BehaviorProfileRepository
 BehaviorStateRepository
 ValueTargetRepository
 InterventionTemplateRepository
+PracticeBlockRepository
 QuestRepository
 QuestResultRepository
 
 BehaviorStateEstimating
 InteractionPlanning
 InterventionSelecting
+PracticeBlockManaging
+ProgressionPolicy
 QuestGenerating
 RecoveredTimeEstimating
 
